@@ -5,7 +5,7 @@ import core.pages.LoginPage;
 public class LoginSteps {
     private LoginPage loginPage = new LoginPage();
 
-    public void iFillInEmail(String email) throws InterruptedException {
+    public void iFillInEmail(String email) {
         loginPage.setEmailField(email);
     }
 
