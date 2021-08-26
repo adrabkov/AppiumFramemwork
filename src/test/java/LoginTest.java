@@ -1,5 +1,6 @@
 import core.steps.LoginSteps;
-import org.junit.Test;
+import org.testng.annotations.Test;
+
 
 public class LoginTest extends BaseTest {
     private LoginSteps loginSteps = new LoginSteps();

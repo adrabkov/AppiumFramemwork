@@ -3,7 +3,7 @@ package core.pages;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-public class LoginPage extends BasePage{
+public class LoginPage extends BasePage {
 
     @FindBy(id = "com.call4site.handymanservices:id/email")
     private WebElement emailField;
@@ -19,11 +19,11 @@ public class LoginPage extends BasePage{
         emailField.sendKeys(email);
     }
 
-    public void setPasswordField(String password){
+    public void setPasswordField(String password) {
         passwordField.sendKeys(password);
     }
 
-    public void clickSignInButton(){
+    public void clickSignInButton() {
         signInButton.click();
     }
 }
