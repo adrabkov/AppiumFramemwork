@@ -1,8 +1,8 @@
 import core.setup.Driver;
 import io.appium.java_client.AppiumDriver;
-import org.junit.After;
-import org.junit.Before;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 
 import java.util.logging.Logger;
 
@@ -11,15 +11,15 @@ public class BaseTest {
     private WebDriverWait wait;
     Logger log = Logger.getLogger("AD");
 
-    @Before
-    public void setUp(){
+    @BeforeTest
+    public void setUp() {
         appiumDriver = Driver.getInstance().getAppiumDriver();
         wait = new WebDriverWait(appiumDriver, 15);
         log.info("wait was set up");
     }
 
-    @After
-    public void  tearDown() {
+    @AfterTest
+    public void tearDown() {
         if (appiumDriver != null) {
             appiumDriver.quit();
         }
