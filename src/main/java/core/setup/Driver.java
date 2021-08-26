@@ -92,11 +92,11 @@ public class Driver extends Configurations {
         }
     }
 
-    public void terminateAllNodeProcess(){
+    public void terminateAllNodeProcess() {
         try {
             Runtime.getRuntime().exec("cmd.exe /c Taskkill /IM node.exe /F");
             log.info("The process 'node.exe' has been terminated");
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -105,6 +105,7 @@ public class Driver extends Configurations {
     public AppiumDriver getAppiumDriver() {
         return appiumDriver;
     }
+
     public AppiumDriver initAppiumDriver() {
         startAppiumService();
         return threadLocal.get();
