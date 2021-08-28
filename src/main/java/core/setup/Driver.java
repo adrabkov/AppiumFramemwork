@@ -26,9 +26,7 @@ public class Driver extends Configurations {
 
     private void startAppiumService() {
         service = AppiumDriverLocalService.buildDefaultService();
-        if (service != null && service.isRunning()) {
-            terminateAllNodeProcess();
-        }
+        terminateAllNodeProcess();
         service.start();
         log.info("An appium server node is started!");
         url = service.getUrl();
