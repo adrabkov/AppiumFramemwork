@@ -1,3 +1,5 @@
+package Tests;
+
 import core.setup.Driver;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
