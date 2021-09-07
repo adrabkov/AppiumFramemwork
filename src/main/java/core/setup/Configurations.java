@@ -18,10 +18,12 @@ public class Configurations {
     protected final String deviceName = getProperty("deviceName");
     protected final String iOsPlatformVersion = getProperty("iOsPlatformVersion");
     protected final String androidPlatformVersion = getProperty("androidPlatformVersion");
+
     protected final String browserStackUser = getProperty("browserStackUser");
     protected final String browserStackKey = getProperty("browserStackKey");
-    protected final String browserStackAppUrl = getProperty("browserStackAppUrl");
-    protected final String browserStackDeviceName = getProperty("browserStackDeviceName");
+    protected final String browserStackAndroidAppUrl = getProperty("browserStackAndroidAppUrl");
+    protected final String browserStackAndroidDeviceName = getProperty("browserStackAndroidDeviceName");
+    protected final String browserStackIOsDeviceName = getProperty("browserStackIOsDeviceName");
     protected final String cloudUrl = getProperty("cloudURL");
 
     protected DesiredCapabilities commonCapabilities(String osName, String platformVersion, String deviceName, String application) {

@@ -35,7 +35,7 @@ public class Driver extends Configurations {
                         var localCaps = commonCapabilities(osName, androidPlatformVersion, deviceName, application);
                         CreateDriver(localCaps, localUrl);
                     } else {
-                        var cloudCaps = commonCapabilities(osName, androidPlatformVersion, browserStackDeviceName, browserStackAppUrl);
+                        var cloudCaps = commonCapabilities(osName, androidPlatformVersion, browserStackAndroidDeviceName, browserStackAndroidAppUrl);
                         CreateDriver(cloudCaps, cloudUrl);
                     }
                 }
@@ -44,7 +44,7 @@ public class Driver extends Configurations {
                         var localCaps = commonCapabilities(osName, iOsPlatformVersion, deviceName, application);
                         CreateDriver(localCaps, localUrl);
                     } else {
-                        var cloudCaps = commonCapabilities(osName, "9.0", "Google Pixel 3", browserStackAppUrl);
+                        var cloudCaps = commonCapabilities(osName, iOsPlatformVersion, browserStackIOsDeviceName, browserStackAndroidAppUrl);
                         CreateDriver(cloudCaps, cloudUrl);
                     }
                 }
