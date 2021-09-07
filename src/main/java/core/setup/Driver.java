@@ -1,7 +1,8 @@
 package core.setup;
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.remote.MobileCapabilityType;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -13,15 +14,66 @@ public class Driver extends Configurations {
 
     private AppiumDriver appiumDriver;
     public static AppiumDriverLocalService service;
-    private URL url;
+    private String localUrl;
 
     private Driver() {
     }
 
-    private static Driver instance = new Driver();
+    private static final Driver instance = new Driver();
 
     public static Driver getInstance() {
         return instance;
+    }
+
+    private final ThreadLocal<AppiumDriver> threadLocal = new ThreadLocal<AppiumDriver>() {
+        protected AppiumDriver initialValue() {
+            switch (osName) {
+                case "Android" -> {
+                    if (isRemote.equals("false")) {
+                        startAppiumService();
+                        runAndroidEmulator(deviceName);
+                        var localCaps = commonCapabilities(osName, androidPlatformVersion, deviceName, application);
+                        CreateDriver(localCaps, localUrl);
+                    } else {
+                        var cloudCaps = commonCapabilities(osName, androidPlatformVersion, browserStackAndroidDeviceName, browserStackAndroidAppUrl);
+                        CreateDriver(cloudCaps, cloudUrl);
+                    }
+                }
+                case "iOS" -> {
+                    if (isRemote.equals("false")) {
+                        var localCaps = commonCapabilities(osName, iOsPlatformVersion, deviceName, application);
+                        CreateDriver(localCaps, localUrl);
+                    } else {
+                        var cloudCaps = commonCapabilities(osName, iOsPlatformVersion, browserStackIOsDeviceName, browserStackAndroidAppUrl);
+                        CreateDriver(cloudCaps, cloudUrl);
+                    }
+                }
+            }
+            return appiumDriver;
+        }
+    };
+
+    public AppiumDriver getAppiumDriver() {
+        return appiumDriver;
+    }
+
+    public AppiumDriver initAppiumDriver() {
+        return threadLocal.get();
+    }
+
+    private void CreateDriver(DesiredCapabilities caps, String Url) {
+        try {
+            if (osName.equals("Android")) {
+                appiumDriver = new AndroidDriver<>(new URL(Url), caps);
+            } else {
+                appiumDriver = new IOSDriver<>(new URL(Url), caps);
+            }
+            appiumDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+            log.info("Create instance of " + osName + " Driver");
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("Instance of " + osName + " Driver is not created");
+        }
     }
 
     private void startAppiumService() {
@@ -29,52 +81,8 @@ public class Driver extends Configurations {
         terminateAllNodeProcess();
         service.start();
         log.info("An appium server node is started!");
-        url = service.getUrl();
+        localUrl = service.getUrl().toString();
     }
-
-    private ThreadLocal<AppiumDriver> threadLocal = new ThreadLocal<AppiumDriver>() {
-        protected AppiumDriver initialValue() {
-            DesiredCapabilities capabilities = new DesiredCapabilities();
-
-            if (appiumDriver == null) {
-                switch (osName) {
-                    case "Android" -> {
-
-                        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, osName);
-                        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, androidPlatformVersion);
-                        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
-                        capabilities.setCapability(MobileCapabilityType.APP, application);
-                        try {
-                            runAndroidEmulator(deviceName);
-                            appiumDriver = new AppiumDriver(url, capabilities);
-                            appiumDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
-                            log.info("Create instance of Android Driver");
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            log.info("Instance of Android Driver is not created");
-                        }
-                    }
-                    case "iOS" -> {
-                        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, osName);
-                        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, iOsPlatformVersion);
-                        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
-                        capabilities.setCapability(MobileCapabilityType.APP, application);
-                        try {
-                            appiumDriver = new AppiumDriver(url, capabilities);
-                            appiumDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
-                            log.info("Create instance of iOS Driver");
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            log.info("Instance of iOS Driver is not created");
-                        }
-                    }
-                }
-            }
-            return appiumDriver;
-        }
-    };
 
     private void runAndroidEmulator(String deviceName) {
         ProcessBuilder builder = new ProcessBuilder();
@@ -90,7 +98,7 @@ public class Driver extends Configurations {
         }
     }
 
-    public void terminateAllNodeProcess() {
+    private void terminateAllNodeProcess() {
         try {
             Runtime.getRuntime().exec("cmd.exe /c Taskkill /IM node.exe /F");
             log.info("The process 'node.exe' has been terminated");
@@ -98,14 +106,5 @@ public class Driver extends Configurations {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    public AppiumDriver getAppiumDriver() {
-        return appiumDriver;
-    }
-
-    public AppiumDriver initAppiumDriver() {
-        startAppiumService();
-        return threadLocal.get();
     }
 }

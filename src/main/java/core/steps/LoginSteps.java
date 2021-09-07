@@ -3,7 +3,7 @@ package core.steps;
 import core.pages.LoginPage;
 
 public class LoginSteps {
-    private LoginPage loginPage = new LoginPage();
+    private final LoginPage loginPage = new LoginPage();
 
     public void iFillInEmail(String email) {
         loginPage.setEmailField(email);
