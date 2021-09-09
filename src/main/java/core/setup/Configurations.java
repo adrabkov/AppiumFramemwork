@@ -24,6 +24,7 @@ public class Configurations {
     protected final String browserStackAndroidAppUrl = getProperty("browserStackAndroidAppUrl");
     protected final String browserStackAndroidDeviceName = getProperty("browserStackAndroidDeviceName");
     protected final String browserStackIOsDeviceName = getProperty("browserStackIOsDeviceName");
+    protected final String browserStackIOsAppUrl = getProperty("browserStackIOsAppUrl");
     protected final String cloudUrl = getProperty("cloudURL");
 
     protected DesiredCapabilities commonCapabilities(String osName, String platformVersion, String deviceName, String application) {
@@ -35,6 +36,7 @@ public class Configurations {
         }
         capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, osName);
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
+        capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME,"uiautomator2");
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
         capabilities.setCapability(MobileCapabilityType.APP, application);
         return capabilities;

@@ -7,6 +7,7 @@ import io.appium.java_client.service.local.AppiumDriverLocalService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
@@ -14,7 +15,6 @@ public class Driver extends Configurations {
 
     private AppiumDriver appiumDriver;
     public static AppiumDriverLocalService service;
-    private String localUrl;
 
     private Driver() {
     }
@@ -30,23 +30,17 @@ public class Driver extends Configurations {
             switch (osName) {
                 case "Android" -> {
                     if (isRemote.equals("false")) {
-                        startAppiumService();
                         runAndroidEmulator(deviceName);
                         var localCaps = commonCapabilities(osName, androidPlatformVersion, deviceName, application);
-                        CreateDriver(localCaps, localUrl);
+                        CreateDriver(localCaps);
                     } else {
                         var cloudCaps = commonCapabilities(osName, androidPlatformVersion, browserStackAndroidDeviceName, browserStackAndroidAppUrl);
-                        CreateDriver(cloudCaps, cloudUrl);
+                        CreateDriver(cloudCaps);
                     }
                 }
                 case "iOS" -> {
-                    if (isRemote.equals("false")) {
-                        var localCaps = commonCapabilities(osName, iOsPlatformVersion, deviceName, application);
-                        CreateDriver(localCaps, localUrl);
-                    } else {
-                        var cloudCaps = commonCapabilities(osName, iOsPlatformVersion, browserStackIOsDeviceName, browserStackAndroidAppUrl);
-                        CreateDriver(cloudCaps, cloudUrl);
-                    }
+                    var cloudCaps = commonCapabilities(osName, iOsPlatformVersion, browserStackIOsDeviceName, browserStackIOsAppUrl);
+                    CreateDriver(cloudCaps);
                 }
             }
             return appiumDriver;
@@ -61,12 +55,16 @@ public class Driver extends Configurations {
         return threadLocal.get();
     }
 
-    private void CreateDriver(DesiredCapabilities caps, String Url) {
+    private void CreateDriver(DesiredCapabilities caps) {
         try {
             if (osName.equals("Android")) {
-                appiumDriver = new AndroidDriver<>(new URL(Url), caps);
+                if (isRemote.equals("false")) {
+                    appiumDriver = new AndroidDriver<>(startAppiumService(), caps);
+                } else {
+                    appiumDriver = new AndroidDriver<>(new URL(cloudUrl), caps);
+                }
             } else {
-                appiumDriver = new IOSDriver<>(new URL(Url), caps);
+                appiumDriver = new IOSDriver<>(new URL(cloudUrl), caps);
             }
             appiumDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
             log.info("Create instance of " + osName + " Driver");
@@ -76,12 +74,29 @@ public class Driver extends Configurations {
         }
     }
 
-    private void startAppiumService() {
-        service = AppiumDriverLocalService.buildDefaultService();
-        terminateAllNodeProcess();
-        service.start();
-        log.info("An appium server node is started!");
-        localUrl = service.getUrl().toString();
+    private AppiumDriverLocalService startAppiumService() {
+        boolean flag = checkIfServerIsRunning();
+        if (!flag) {
+            service = AppiumDriverLocalService.buildDefaultService();
+            service.start();
+            log.info("An appium server node is started!");
+        }
+        return service;
+    }
+
+    private boolean checkIfServerIsRunning() {
+        boolean isServerRunning = false;
+        ServerSocket serverSocket;
+        try {
+            serverSocket = new ServerSocket(4723);
+            serverSocket.close();
+        } catch (IOException e) {
+            isServerRunning = true;
+            log.info("An appium server node already started!");
+        } finally {
+            serverSocket = null;
+        }
+        return isServerRunning;
     }
 
     private void runAndroidEmulator(String deviceName) {
@@ -91,20 +106,10 @@ public class Driver extends Configurations {
                 .command("cmd.exe", "/c", "cd /d " + path + " && emulator -avd " + deviceName);
         try {
             builder.start();
-            Thread.sleep(10000);
+            Thread.sleep(6000);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             log.info("Android emulator is not started");
-        }
-    }
-
-    private void terminateAllNodeProcess() {
-        try {
-            Runtime.getRuntime().exec("cmd.exe /c Taskkill /IM node.exe /F");
-            log.info("The process 'node.exe' has been terminated");
-            Thread.sleep(1000);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
         }
     }
 }
