@@ -30,7 +30,6 @@ public class Driver extends Configurations {
             switch (osName) {
                 case "Android" -> {
                     if (isRemote.equals("false")) {
-                        runAndroidEmulator(deviceName);
                         var localCaps = commonCapabilities(osName, androidPlatformVersion, deviceName, application);
                         CreateDriver(localCaps);
                     } else {
@@ -97,19 +96,5 @@ public class Driver extends Configurations {
             serverSocket = null;
         }
         return isServerRunning;
-    }
-
-    private void runAndroidEmulator(String deviceName) {
-        ProcessBuilder builder = new ProcessBuilder();
-        String path = System.getenv("ANDROID_HOME").concat("\\emulator");
-        builder
-                .command("cmd.exe", "/c", "cd /d " + path + " && emulator -avd " + deviceName);
-        try {
-            builder.start();
-            Thread.sleep(6000);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            log.info("Android emulator is not started");
-        }
     }
 }

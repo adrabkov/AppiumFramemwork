@@ -15,7 +15,6 @@ public class LoginPage extends BasePage {
     private WebElement signInButton;
 
     public void setEmailField(String email) {
-        emailField.isDisplayed();
         emailField.sendKeys(email);
     }
 
