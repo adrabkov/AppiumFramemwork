@@ -20,4 +20,13 @@ public class cmd {
             e.printStackTrace();
         }
     }
+
+    private void terminateAllNodeProcess() {
+        try {
+            Runtime.getRuntime().exec("cmd.exe /c Taskkill /IM node.exe /F");
+            Thread.sleep(1000);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

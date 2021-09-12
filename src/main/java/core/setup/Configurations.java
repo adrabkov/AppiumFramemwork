@@ -1,7 +1,9 @@
 package core.setup;
 
+import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,6 +26,7 @@ public class Configurations {
     protected final String browserStackAndroidAppUrl = getProperty("browserStackAndroidAppUrl");
     protected final String browserStackAndroidDeviceName = getProperty("browserStackAndroidDeviceName");
     protected final String browserStackIOsDeviceName = getProperty("browserStackIOsDeviceName");
+    protected final String browserStackIOsAppUrl = getProperty("browserStackIOsAppUrl");
     protected final String cloudUrl = getProperty("cloudURL");
 
     protected DesiredCapabilities commonCapabilities(String osName, String platformVersion, String deviceName, String application) {
@@ -33,10 +36,17 @@ public class Configurations {
             capabilities.setCapability("browserstack.user", browserStackUser);
             capabilities.setCapability("browserstack.key", browserStackKey);
         }
+        if (osName.equals("Android")){
+            capabilities.setCapability(AndroidMobileCapabilityType.AVD, deviceName);
+            capabilities.setCapability(AndroidMobileCapabilityType.DONT_STOP_APP_ON_RESET, true);
+            //capabilities.setCapability(AndroidMobileCapabilityType.ANDROID_INSTALL_TIMEOUT, 2000);
+        }
         capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, osName);
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
+        capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME,"uiautomator2");
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
         capabilities.setCapability(MobileCapabilityType.APP, application);
+
         return capabilities;
     }
 
