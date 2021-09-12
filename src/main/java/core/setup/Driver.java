@@ -2,6 +2,7 @@ package core.setup;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Driver extends Configurations {
 
-    private AppiumDriver appiumDriver;
+    private AndroidDriver<AndroidElement> appiumDriver;
     public static AppiumDriverLocalService service;
 
     private Driver() {
@@ -25,8 +26,8 @@ public class Driver extends Configurations {
         return instance;
     }
 
-    private final ThreadLocal<AppiumDriver> threadLocal = new ThreadLocal<AppiumDriver>() {
-        protected AppiumDriver initialValue() {
+    private final ThreadLocal<AndroidDriver> threadLocal = new ThreadLocal<AndroidDriver>() {
+        protected AndroidDriver initialValue() {
             switch (osName) {
                 case "Android" -> {
                     if (isRemote.equals("false")) {
@@ -46,11 +47,11 @@ public class Driver extends Configurations {
         }
     };
 
-    public AppiumDriver getAppiumDriver() {
+    public AndroidDriver getAppiumDriver() {
         return appiumDriver;
     }
 
-    public AppiumDriver initAppiumDriver() {
+    public AndroidDriver initAppiumDriver() {
         return threadLocal.get();
     }
 
@@ -58,12 +59,12 @@ public class Driver extends Configurations {
         try {
             if (osName.equals("Android")) {
                 if (isRemote.equals("false")) {
-                    appiumDriver = new AndroidDriver<>(startAppiumService(), caps);
+                    appiumDriver = new AndroidDriver<AndroidElement>(startAppiumService(), caps);
                 } else {
                     appiumDriver = new AndroidDriver<>(new URL(cloudUrl), caps);
                 }
             } else {
-                appiumDriver = new IOSDriver<>(new URL(cloudUrl), caps);
+                //appiumDriver = new IOSDriver<>(new URL(cloudUrl), caps);
             }
             appiumDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
             log.info("Create instance of " + osName + " Driver");

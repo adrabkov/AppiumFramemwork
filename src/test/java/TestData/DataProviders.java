@@ -11,4 +11,12 @@ public class DataProviders {
                 {"test2@gmail.com", "87654321"}
         };
     }
+
+    @DataProvider(name = "RegistrationData")
+    public static Object[][] setRegistrationData() {
+        return new Object[][]{
+                {"Argentina", "Alex", "Male"},
+                {"Belarus", "Nastya", "Female"}
+        };
+    }
 }
