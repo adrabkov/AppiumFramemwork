@@ -25,11 +25,6 @@ public class BaseTest {
 
     @AfterTest
     public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
-        if (Driver.service != null) {
-            Driver.service.stop();
-        }
+        driver.quit();
     }
 }
