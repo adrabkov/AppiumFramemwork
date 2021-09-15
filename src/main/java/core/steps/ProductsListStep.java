@@ -1,16 +1,16 @@
 package core.steps;
 
-import core.pages.ProductsListPage;
 import org.testng.Assert;
 
-public class ProductsListStep {
-    ProductsListPage productsListPage = new ProductsListPage();
+public class ProductsListStep extends BaseStep {
 
-    public void waitUntilProductListIsOpen(){
+    public ProductsListStep waitUntilProductListIsOpen() {
         productsListPage.waitUntilProductListIsDisplayed();
+        return this;
     }
 
-    public void verifyThatRightTabIsOpen(String tabName){
-        Assert.assertEquals(productsListPage.getTextFromToolBar(), tabName,  tabName + " page is not open");
+    public ProductsListStep verifyThatRightTabIsOpen(String tabName) {
+        Assert.assertEquals(productsListPage.getTextFromToolBar(), tabName, tabName + " page is not open");
+        return this;
     }
 }

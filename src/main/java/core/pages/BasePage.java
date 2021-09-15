@@ -20,9 +20,8 @@ public abstract class BasePage {
         PageFactory.initElements(driver, this);
     }
 
-    protected void scrollToText(String text)
-    {
-        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\""+text+"\"));");
+    protected void scrollToText(String text) {
+        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\"" + text + "\"));");
     }
 
     public boolean waitForElement(WebElement element) {

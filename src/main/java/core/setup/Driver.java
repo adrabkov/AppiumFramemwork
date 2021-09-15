@@ -1,14 +1,10 @@
 package core.setup;
 
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
-import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
@@ -59,7 +55,7 @@ public class Driver extends Configurations {
         try {
             if (osName.equals("Android")) {
                 if (isRemote.equals("false")) {
-                    appiumDriver = new AndroidDriver<AndroidElement>(startAppiumService(), caps);
+                    appiumDriver = new AndroidDriver<AndroidElement>(caps);
                 } else {
                     appiumDriver = new AndroidDriver<>(new URL(cloudUrl), caps);
                 }
@@ -72,30 +68,5 @@ public class Driver extends Configurations {
             e.printStackTrace();
             log.info("Instance of " + osName + " Driver is not created");
         }
-    }
-
-    private AppiumDriverLocalService startAppiumService() {
-        boolean flag = checkIfServerIsRunning();
-        if (!flag) {
-            service = AppiumDriverLocalService.buildDefaultService();
-            service.start();
-            log.info("An appium server node is started!");
-        }
-        return service;
-    }
-
-    private boolean checkIfServerIsRunning() {
-        boolean isServerRunning = false;
-        ServerSocket serverSocket;
-        try {
-            serverSocket = new ServerSocket(4723);
-            serverSocket.close();
-        } catch (IOException e) {
-            isServerRunning = true;
-            log.info("An appium server node already started!");
-        } finally {
-            serverSocket = null;
-        }
-        return isServerRunning;
     }
 }

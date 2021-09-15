@@ -1,25 +1,24 @@
 package core.steps;
 
-import core.pages.FormPage;
+public class FormStep extends BaseStep {
 
-import java.text.Normalizer;
-
-public class FormStep {
-    private final FormPage formPage = new FormPage();
-
-    public void iSelectCountryFromDropDown(String country){
+    public FormStep iSelectCountryFromDropDown(String country) {
         formPage.selectCountry(country);
+        return this;
     }
 
-    public void iSpecifyName(String name){
+    public FormStep iSpecifyName(String name) {
         formPage.fillNameField(name);
+        return this;
     }
 
-    public void iSelectFemaleOption(String gender){
+    public FormStep iSelectFemaleOption(String gender) {
         formPage.clickFemaleRadioButton(gender);
+        return this;
     }
 
-    public void iClickLetsShopButton(){
+    public FormStep iClickLetsShopButton() {
         formPage.clickLetsShopButton();
+        return this;
     }
 }

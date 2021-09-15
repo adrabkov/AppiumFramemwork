@@ -36,14 +36,14 @@ public class Configurations {
             capabilities.setCapability("browserstack.user", browserStackUser);
             capabilities.setCapability("browserstack.key", browserStackKey);
         }
-        if (osName.equals("Android")){
+        if (osName.equals("Android")) {
             capabilities.setCapability(AndroidMobileCapabilityType.AVD, deviceName);
-            capabilities.setCapability(AndroidMobileCapabilityType.DONT_STOP_APP_ON_RESET, false);
+            //capabilities.setCapability(AndroidMobileCapabilityType.DONT_STOP_APP_ON_RESET, false);
             //capabilities.setCapability(AndroidMobileCapabilityType.ANDROID_INSTALL_TIMEOUT, 2000);
         }
         capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, osName);
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
-        capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME,"uiautomator2");
+        capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "uiautomator2");
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
         capabilities.setCapability(MobileCapabilityType.APP, application);
         return capabilities;
