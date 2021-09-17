@@ -1,8 +1,7 @@
 package core.setup;
 
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
-import io.appium.java_client.service.local.AppiumDriverLocalService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
@@ -10,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Driver extends Configurations {
 
-    private AndroidDriver<AndroidElement> appiumDriver;
-    public static AppiumDriverLocalService service;
+    private AndroidDriver appiumDriver;
+
 
     private Driver() {
     }
@@ -25,19 +24,21 @@ public class Driver extends Configurations {
     private final ThreadLocal<AndroidDriver> threadLocal = new ThreadLocal<AndroidDriver>() {
         protected AndroidDriver initialValue() {
             switch (osName) {
-                case "Android" -> {
+                case "Android":
                     if (isRemote.equals("false")) {
-                        var localCaps = commonCapabilities(osName, androidPlatformVersion, deviceName, application);
+                        var localCaps = androidCapabilities(osName, androidPlatformVersion, deviceName, application);
+                        certainUrl = appiumHub;
                         CreateDriver(localCaps);
                     } else {
-                        var cloudCaps = commonCapabilities(osName, androidPlatformVersion, browserStackAndroidDeviceName, browserStackAndroidAppUrl);
+                        var cloudCaps = androidCapabilities(osName, androidPlatformVersion, browserStackAndroidDeviceName, browserStackAndroidAppUrl);
+                        certainUrl = cloudUrl;
                         CreateDriver(cloudCaps);
                     }
-                }
-                case "iOS" -> {
-                    var cloudCaps = commonCapabilities(osName, iOsPlatformVersion, browserStackIOsDeviceName, browserStackIOsAppUrl);
+                    break;
+                case "iOS":
+                    var cloudCaps = androidCapabilities(osName, iOsPlatformVersion, browserStackIOsDeviceName, browserStackIOsAppUrl);
                     CreateDriver(cloudCaps);
-                }
+                    break;
             }
             return appiumDriver;
         }
@@ -51,18 +52,13 @@ public class Driver extends Configurations {
         return threadLocal.get();
     }
 
-    private void CreateDriver(DesiredCapabilities caps) {
+    private void CreateDriver(DesiredCapabilities capabilities) {
         try {
-            if (osName.equals("Android")) {
-                if (isRemote.equals("false")) {
-                    appiumDriver = new AndroidDriver<AndroidElement>(caps);
-                } else {
-                    appiumDriver = new AndroidDriver<>(new URL(cloudUrl), caps);
-                }
-            } else {
-                //appiumDriver = new IOSDriver<>(new URL(cloudUrl), caps);
+            if (osName.equals("Android")){
+                appiumDriver = new AndroidDriver(new URL(certainUrl), capabilities);
             }
-            appiumDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+            //appiumDriver = new AppiumDriver(new URL(certainUrl), capabilities);
+            appiumDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
             log.info("Create instance of " + osName + " Driver");
         } catch (Exception e) {
             e.printStackTrace();

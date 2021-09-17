@@ -1,11 +1,13 @@
 package core.pages;
 
 import core.setup.Driver;
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.touch.TouchActions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -13,7 +15,7 @@ import org.openqa.selenium.support.ui.Wait;
 import java.time.Duration;
 
 public abstract class BasePage {
-    AndroidDriver<AndroidElement> driver = Driver.getInstance().getAppiumDriver();
+    AndroidDriver driver = Driver.getInstance().getAppiumDriver();
     protected Wait<AndroidDriver> wait;
 
     public BasePage() {
@@ -22,6 +24,13 @@ public abstract class BasePage {
 
     protected void scrollToText(String text) {
         driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\"" + text + "\"));");
+    }
+
+    public void scroll(WebElement element){
+        TouchActions action = new TouchActions(driver);
+        action.scroll(element, 10, 100);
+        action.perform();
+        element.click();
     }
 
     public boolean waitForElement(WebElement element) {

@@ -8,7 +8,7 @@ public class DataProviders {
     public static Object[][] setRegistrationData() {
         return new Object[][]{
                 {"Argentina", "Alex", "Male"},
-                //{"Belarus", "Nastya", "Female"}
+                {"Belarus", "Nastya", "Female"}
         };
     }
 }

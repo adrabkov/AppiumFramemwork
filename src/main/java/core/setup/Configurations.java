@@ -13,6 +13,9 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 public class Configurations {
+    protected String appiumHub = "http://127.0.0.1:4723/wd/hub";
+    String certainUrl = null;
+
     protected final Logger log = Logger.getLogger("AD");
     protected final String osName = getProperty("OS");
     protected final String isRemote = getProperty("isRemote");
@@ -29,23 +32,22 @@ public class Configurations {
     protected final String browserStackIOsAppUrl = getProperty("browserStackIOsAppUrl");
     protected final String cloudUrl = getProperty("cloudURL");
 
-    protected DesiredCapabilities commonCapabilities(String osName, String platformVersion, String deviceName, String application) {
+    protected DesiredCapabilities androidCapabilities(String osName, String platformVersion, String deviceName, String application) {
         DesiredCapabilities capabilities = new DesiredCapabilities();
 
         if (isRemote.equals("true")) {
             capabilities.setCapability("browserstack.user", browserStackUser);
             capabilities.setCapability("browserstack.key", browserStackKey);
         }
-        if (osName.equals("Android")) {
-            capabilities.setCapability(AndroidMobileCapabilityType.AVD, deviceName);
-            //capabilities.setCapability(AndroidMobileCapabilityType.DONT_STOP_APP_ON_RESET, false);
-            //capabilities.setCapability(AndroidMobileCapabilityType.ANDROID_INSTALL_TIMEOUT, 2000);
-        }
         capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, osName);
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
-        capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "uiautomator2");
+        capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "UiAutomator2");
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
         capabilities.setCapability(MobileCapabilityType.APP, application);
+        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "120");
+        capabilities.setCapability(MobileCapabilityType.FULL_RESET, "false");
+        capabilities.setCapability(AndroidMobileCapabilityType.AVD, deviceName);
+        capabilities.setCapability("adbExecTimeout", "30000");
         return capabilities;
     }
 

@@ -30,7 +30,10 @@ public class FormPage extends BasePage {
     public void selectCountry(String country) {
         countrySelection.click();
         scrollToText(country);
+        //scroll(driver.findElement(By.xpath("//*[@text='" + country + "']")));
         driver.findElement(By.xpath("//*[@text='" + country + "']")).click();
+
+
     }
 
     public void clickLetsShopButton() {
