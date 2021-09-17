@@ -6,7 +6,7 @@ public class CommonSteps {
         return new FormStep();
     }
 
-    public ProductsListStep getProductsListStep() {
-        return new ProductsListStep();
+    public AtProductsListStep getProductsListStep() {
+        return new AtProductsListStep();
     }
 }
