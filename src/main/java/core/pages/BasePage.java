@@ -15,7 +15,7 @@ import org.openqa.selenium.support.ui.Wait;
 import java.time.Duration;
 
 public abstract class BasePage {
-    AndroidDriver driver = Driver.getInstance().getAppiumDriver();
+    AndroidDriver driver = Driver.driver;
     protected Wait<AndroidDriver> wait;
 
     public BasePage() {

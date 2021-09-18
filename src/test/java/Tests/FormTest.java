@@ -1,5 +1,6 @@
 package Tests;
 
+import core.setup.Driver;
 import org.testng.annotations.Test;
 
 public class FormTest extends BaseTest {
