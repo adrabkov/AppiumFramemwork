@@ -1,20 +1,16 @@
 package core.setup;
 
-import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.ios.IOSDriver;
-import io.appium.java_client.service.local.AppiumDriverLocalService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class Driver extends Configurations {
 
-    private AppiumDriver appiumDriver;
-    public static AppiumDriverLocalService service;
+    private final ThreadLocalDriver threadLocalDriver = new ThreadLocalDriver();
+    AndroidDriver driver;
 
     private Driver() {
     }
@@ -25,76 +21,41 @@ public class Driver extends Configurations {
         return instance;
     }
 
-    private final ThreadLocal<AppiumDriver> threadLocal = new ThreadLocal<AppiumDriver>() {
-        protected AppiumDriver initialValue() {
-            switch (osName) {
-                case "Android" -> {
-                    if (isRemote.equals("false")) {
-                        var localCaps = commonCapabilities(osName, androidPlatformVersion, deviceName, application);
-                        CreateDriver(localCaps);
-                    } else {
-                        var cloudCaps = commonCapabilities(osName, androidPlatformVersion, browserStackAndroidDeviceName, browserStackAndroidAppUrl);
-                        CreateDriver(cloudCaps);
-                    }
-                }
-                case "iOS" -> {
-                    var cloudCaps = commonCapabilities(osName, iOsPlatformVersion, browserStackIOsDeviceName, browserStackIOsAppUrl);
+    public AndroidDriver<MobileElement> getAppiumDriver() {
+        switch (osName) {
+            case "Android":
+                if (isRemote.equals("false")) {
+                    var localCaps = androidCapabilities(osName, androidPlatformVersion, deviceName, application);
+                    certainUrl = appiumHub;
+                    CreateDriver(localCaps);
+                } else {
+                    var cloudCaps = androidCapabilities(osName, androidPlatformVersion, browserStackAndroidDeviceName, browserStackAndroidAppUrl);
+                    certainUrl = cloudUrl;
                     CreateDriver(cloudCaps);
                 }
-            }
-            return appiumDriver;
+                break;
+            case "iOS":
+                var cloudCaps = iOsCapabilities(osName, iOsPlatformVersion, browserStackIOsDeviceName, browserStackIOsAppUrl);
+                certainUrl = cloudUrl;
+                CreateDriver(cloudCaps);
+                break;
         }
-    };
-
-    public AppiumDriver getAppiumDriver() {
-        return appiumDriver;
+        threadLocalDriver.setTLDriver(driver);
+        return driver;
     }
 
-    public AppiumDriver initAppiumDriver() {
-        return threadLocal.get();
+    public AndroidDriver<MobileElement> getThreadLocalDriver() {
+        return threadLocalDriver.getTLDriver();
     }
 
-    private void CreateDriver(DesiredCapabilities caps) {
+    private void CreateDriver(DesiredCapabilities capabilities) {
         try {
-            if (osName.equals("Android")) {
-                if (isRemote.equals("false")) {
-                    appiumDriver = new AndroidDriver<>(startAppiumService(), caps);
-                } else {
-                    appiumDriver = new AndroidDriver<>(new URL(cloudUrl), caps);
-                }
-            } else {
-                appiumDriver = new IOSDriver<>(new URL(cloudUrl), caps);
-            }
-            appiumDriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+            driver = new AndroidDriver(new URL(certainUrl), capabilities);
+            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
             log.info("Create instance of " + osName + " Driver");
         } catch (Exception e) {
             e.printStackTrace();
             log.info("Instance of " + osName + " Driver is not created");
         }
-    }
-
-    private AppiumDriverLocalService startAppiumService() {
-        boolean flag = checkIfServerIsRunning();
-        if (!flag) {
-            service = AppiumDriverLocalService.buildDefaultService();
-            service.start();
-            log.info("An appium server node is started!");
-        }
-        return service;
-    }
-
-    private boolean checkIfServerIsRunning() {
-        boolean isServerRunning = false;
-        ServerSocket serverSocket;
-        try {
-            serverSocket = new ServerSocket(4723);
-            serverSocket.close();
-        } catch (IOException e) {
-            isServerRunning = true;
-            log.info("An appium server node already started!");
-        } finally {
-            serverSocket = null;
-        }
-        return isServerRunning;
     }
 }
