@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 public class Configurations {
     protected String appiumHub = "http://127.0.0.1:4723/wd/hub";
+    DesiredCapabilities capabilities = new DesiredCapabilities();
     String certainUrl = null;
 
     protected final Logger log = Logger.getLogger("AD");
@@ -24,8 +25,6 @@ public class Configurations {
     protected final String iOsPlatformVersion = getProperty("iOsPlatformVersion");
     protected final String androidPlatformVersion = getProperty("androidPlatformVersion");
 
-    protected final String browserStackUser = getProperty("browserStackUser");
-    protected final String browserStackKey = getProperty("browserStackKey");
     protected final String browserStackAndroidAppUrl = getProperty("browserStackAndroidAppUrl");
     protected final String browserStackAndroidDeviceName = getProperty("browserStackAndroidDeviceName");
     protected final String browserStackIOsDeviceName = getProperty("browserStackIOsDeviceName");
@@ -33,11 +32,9 @@ public class Configurations {
     protected final String cloudUrl = getProperty("cloudURL");
 
     protected DesiredCapabilities androidCapabilities(String osName, String platformVersion, String deviceName, String application) {
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-
         if (isRemote.equals("true")) {
-            capabilities.setCapability("browserstack.user", browserStackUser);
-            capabilities.setCapability("browserstack.key", browserStackKey);
+            capabilities.setCapability("browserstack.user", "bsuser_ORDmUw");
+            capabilities.setCapability("browserstack.key", "BephgLH6TPPp1yhJSQmj");
         }
         capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, osName);
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
@@ -48,6 +45,21 @@ public class Configurations {
         capabilities.setCapability(MobileCapabilityType.FULL_RESET, "false");
         capabilities.setCapability(AndroidMobileCapabilityType.AVD, deviceName);
         capabilities.setCapability("adbExecTimeout", "30000");
+        return capabilities;
+    }
+
+    protected DesiredCapabilities iOsCapabilities(String osName, String platformVersion, String deviceName, String application) {
+        if (isRemote.equals("true")) {
+            capabilities.setCapability("browserstack.user", "bsuser_ORDmUw");
+            capabilities.setCapability("browserstack.key", "BephgLH6TPPp1yhJSQmj");
+        }
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, osName);
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
+        capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
+        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "120");
+        capabilities.setCapability(MobileCapabilityType.FULL_RESET, "false");
+        capabilities.setCapability("clearSystemFiles", true);
         return capabilities;
     }
 
