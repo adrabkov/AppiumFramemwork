@@ -26,7 +26,7 @@ public abstract class BasePage {
         driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\"" + text + "\"));");
     }
 
-    public void scroll(WebElement element){
+    public void scroll(WebElement element) {
         TouchActions action = new TouchActions(driver);
         action.scroll(element, 10, 100);
         action.perform();
