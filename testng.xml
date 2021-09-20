@@ -7,6 +7,10 @@
     <test thread-count="5" name="Test">
         <classes>
             <class name="Tests.AbilityToOpenProductsTab"/>
+            <class name="Tests.AbilityToAddProductToCart"/>
+            <class name="Tests.AbilityToOpenCartTab"/>
+            <class name="Tests.AbilityToPressBackButton"/>
+            <class name="Tests.AbilityToRemoveProductFromCart"/>
         </classes>
     </test> <!-- Test -->
 </suite> <!-- Suite -->

@@ -9,4 +9,8 @@ public class User {
     public AtProductsListPage atProductsListPage() {
         return new AtProductsListPage();
     }
+
+    public AtCartPage atCartPage(){
+        return new AtCartPage();
+    }
 }
