@@ -41,7 +41,7 @@ public class Configurations {
         capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "UiAutomator2");
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
         capabilities.setCapability(MobileCapabilityType.APP, application);
-        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "120");
+        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, "240");
         capabilities.setCapability(MobileCapabilityType.FULL_RESET, "false");
         capabilities.setCapability(AndroidMobileCapabilityType.AVD, deviceName);
         capabilities.setCapability("adbExecTimeout", "30000");

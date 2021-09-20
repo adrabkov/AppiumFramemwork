@@ -1,11 +1,13 @@
 package Tests;
 
+import core.TestData.DataProviders;
 import org.testng.annotations.Test;
 
-public class AbilityToOpenProductsTab extends BaseTest {
-    private String tabName = "Products";
+import static core.TestData.TestVariables.PRODUCT_TAB_NAME;
 
-    @Test(dataProvider = "RegistrationData", dataProviderClass = TestData.DataProviders.class)
+public class AbilityToOpenProductsTab extends BaseTest {
+
+    @Test(dataProvider = "RegistrationData", dataProviderClass = DataProviders.class)
     public void abilityToOpenProductsTabTest(String country, String name, String gender) {
         user.atFormPage()
                 .selectCountryFromDropDown(country)
@@ -14,6 +16,6 @@ public class AbilityToOpenProductsTab extends BaseTest {
                 .clickLetsShopButton();
         user.atProductsListPage()
                 .waitUntilProductListIsOpen()
-                .verifyThatRightTabIsOpen(tabName);
+                .verifyThatRightTabIsOpen(PRODUCT_TAB_NAME);
     }
 }

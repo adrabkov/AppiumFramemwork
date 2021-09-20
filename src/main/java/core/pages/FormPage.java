@@ -6,6 +6,9 @@ import org.openqa.selenium.support.FindBy;
 
 public class FormPage extends BasePage {
 
+    @FindBy(id = "com.androidsample.generalstore:id/toolbar_title")
+    private WebElement tabName;
+
     @FindBy(id = "com.androidsample.generalstore:id/nameField")
     private WebElement nameField;
 
@@ -34,6 +37,10 @@ public class FormPage extends BasePage {
 
     public void clickLetsShopButton() {
         letsShopButton.click();
+    }
+
+    public String getTitleFromFormTab(){
+        return tabName.getText();
     }
 
 }
